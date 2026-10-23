@@ -1,0 +1,33 @@
+{
+    "$schema": "https://raw.githubusercontent.com/alizharb/laravel-themer/main/resources/schemas/theme.schema.json",
+    "name": "mercy-blank",
+    "slug": "mercy-blank",
+    "description": "Default theme",
+    "author": "Andreas Klebe",
+    "version": "2.0.0",
+    "parent": null,
+    "tags": [
+        "modern",
+        "responsive"
+    ],
+    "asset_path": "themes/mercy-blank",
+    "screenshots": [
+        "resources/assets/screenshots/screenshot-light.png",
+        "resources/assets/screenshots/screenshot-dark.png"
+    ],
+    "removable": true,
+    "disableable": true,
+    "requires": {
+        "themes": [],
+        "modules": [],
+        "packages": {}
+    },
+    "conflicts": [],
+    "provides": [],
+    "tokens": {
+        "color.primary": "#2563eb",
+        "color.background": "#ffffff",
+        "radius.card": "1rem"
+    },
+    "hooks": {}
+}

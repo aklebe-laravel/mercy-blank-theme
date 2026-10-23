@@ -1,0 +1,13 @@
+{
+  "name": "aklebe-laravel/mercy-blank-theme",
+  "type": "laravel-theme",
+  "description": "Mercy Default Theme",
+  "authors": [
+    {
+      "name": "Andreas Klebe",
+      "email": "a.klebe.work@gmail.com"
+    }
+  ],
+  "require": {
+  }
+}
