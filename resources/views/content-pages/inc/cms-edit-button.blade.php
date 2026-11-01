@@ -8,7 +8,7 @@
 @endphp
 <span class="cms-edit-button" title="{{ $cmsModel->code }}">
     <a href="{{ route('manage-data', ['modelName' => $cmsModelName, 'modelId' => $id]) }}"
-       class="btn-sm btn-primary">
+       class="btn btn-primary px-2 py-1">
         <x-lucide-notebook-pen class="h-5 w-5"/>
     </a>
 </span>

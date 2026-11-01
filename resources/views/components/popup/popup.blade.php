@@ -1,17 +1,17 @@
-{{-- resources/views/components/popover.blade.php --}}
 @props([
     'title' => null,
     'content' => null,
     'componentView' => null,
     'customData' => [],
-    'stableId' => null, // CRITICAL: Pass the VM-ID or unique key here
+    'stableId' => null, // pass a stable unique key (e.g. the VM id), see below
 ])
 
 @php
-    // Fallback if no stableId is provided, but aim for stableId!
+    // Fallback only: without a stable id the popover is re-created whenever class or title change
     $id = $stableId ?: 'pop_' . md5($attributes->get('class') . $title);
 @endphp
 
+{{-- No max-lg:hidden needed: popoverHandler already hides it on small screens --}}
 <div
         id="{{ $id }}"
         popover="manual"

@@ -1,19 +1,9 @@
-@php
-    //$paginationData = [
-    //    'maxPages'    => 10,
-    //    'itemsPerPage' => 3,
-    //];
-@endphp
 <x-app-layout>
     <x-slot name="header">
-        <h1 class="font-semibold text-xl leading-tight text-danger">
+        <h1 class="font-semibold text-xl leading-tight">
             {{ config('app.name') }} {{ config('app.version') }}
         </h1>
     </x-slot>
 
-    123...
-{{--    <div class="">--}}
-{{--        <livewire:mercy-blank::vm-desktop wire:key="Home-Desktop-Vm-Status"/>--}}
-{{--    </div>--}}
+    {{-- Placeholder start page: replace it in the project or override the view --}}
 </x-app-layout>
-

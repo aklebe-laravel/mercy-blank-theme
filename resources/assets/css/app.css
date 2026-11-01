@@ -1,28 +1,56 @@
+/* =============================================================================
+ * app.css  (theme mercy-blank)
+ *
+ *   1. Imports, sources, variants
+ *   2. Theme tokens (light palette) and dark mapping
+ *   3. @layer base        Defaults for HTML elements
+ *   4. @layer components  Buttons, alerts, form controls, layout, tables ...
+ *   5. @layer overrides   Adjustments to TallStackUI components (fields, selects, toggle, panels)
+ *   6. Keyframes
+ *
+ * Ground rule: everything custom lives in a layer. Tailwind utilities (including
+ * the ones TallStackUI renders) sit in the "utilities" layer and therefore beat
+ * base and components, however specific the selectors are. Unlayered rules would
+ * beat every utility class instead. That is why nothing here is unlayered, except
+ * the tokens in section 2. Only "overrides" (section 5) deliberately comes AFTER
+ * the utilities and may beat them.
+ *
+ * Do not move this file: the url('../images/...') references below are relative
+ * to its location.
+ * ============================================================================= */
+
+/* -----------------------------------------------------------------------------
+ * 1. Imports, sources, variants
+ * -------------------------------------------------------------------------- */
 @import "tailwindcss";
 @import "../../../../../vendor/tallstackui/tallstackui/css/v4.css";
 
 @plugin "@tailwindcss/forms";
 
-
 @source "../../../../../vendor/laravel/framework/src/Illuminate/Pagination/resources/views/*.blade.php";
 @source "../../../../../vendor/tallstackui/tallstackui/**/*.php";
 /* own theme */
 @source "../../views/**/*.blade.php";
-/* @todo: Check which modules are enabled */
+/* @todo: check which modules are enabled */
 @source "../../../../../Modules/*";
 
 @custom-variant dark (&:where(.dark, .dark *));
 
+
+/* -----------------------------------------------------------------------------
+ * 2. Theme tokens
+ *    Light: @theme. Dark: .dark inverts the scales, so no style needs a dark:
+ *    variant. Deliberately unlayered: these are variables, not rules.
+ * -------------------------------------------------------------------------- */
 @theme {
 
     --spacing-multiplier: 1;
     --base-font-size: 1rem;
 
     --font-sans: ui-sans-serif, system-ui, sans-serif, "Apple Color Emoji", "Segoe UI Emoji";
-    /*--font-sans: ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;*/
     --font-size-fluid-xl: clamp(1rem, 5vw, 3rem);
 
-    /* --- SURFACE (Slate / Graublau) --- */
+    /* --- SURFACE (Slate / blue-gray) --- */
     --color-surface-50: #f8fafc;
     --color-surface-100: #f1f5f9;
     --color-surface-200: #e2e8f0;
@@ -100,7 +128,7 @@
     --color-danger-900: #881337;
     --color-danger-950: #4c0519;
 
-    /* --- ERROR (Red - Identisch zu Danger für volle Kompatibilität) --- */
+    /* --- ERROR (Red - identical to danger for full compatibility) --- */
     --color-error-50: #fef2f2;
     --color-error-100: #fee2e2;
     --color-error-200: #fecaca;
@@ -139,7 +167,7 @@
     --color-info-900: #0c4a6e;
     --color-info-950: #082f49;
 
-    /* --- MUTED (Alias auf Surface) --- */
+    /* --- MUTED (alias of surface) --- */
     --color-muted-50: var(--color-surface-50);
     --color-muted-100: var(--color-surface-100);
     --color-muted-200: var(--color-surface-200);
@@ -273,7 +301,7 @@
     --color-info-900: #e0f2fe;
     --color-info-950: #f0f9ff;
 
-    /* --- MUTED (Alias auf Surface) --- */
+    /* --- MUTED (alias of surface) --- */
     --color-muted-50: var(--color-surface-50);
     --color-muted-100: var(--color-surface-100);
     --color-muted-200: var(--color-surface-200);
@@ -285,744 +313,1036 @@
     --color-muted-800: var(--color-surface-800);
     --color-muted-900: var(--color-surface-900);
     --color-muted-950: var(--color-surface-950);
-
-
 }
 
-/*@layer base {*/
 
-/*    .dark {*/
-/*        --color-surface-50: #020617;*/
-/*        --color-surface-100: #0f172a;*/
-/*        --color-surface-200: #1e293b;*/
-/*        --color-surface-300: #334155;*/
-/*        --color-surface-400: #475569;*/
-/*        --color-surface-500: #94a3b8;*/
-/*        --color-surface-600: #cbd5e1;*/
-/*        --color-surface-700: #e2e8f0;*/
-/*        --color-surface-800: #f1f5f9;*/
-/*        --color-surface-900: #f8fafc;*/
-/*        --color-surface-950: #ffffff;*/
+/* -----------------------------------------------------------------------------
+ * 3. Base
+ * -------------------------------------------------------------------------- */
+@layer base {
 
-/*        --color-primary-500: #818cf8;*/
-/*        --color-accent-500: #c084fc;*/
-/*    }*/
+    /* Native dropdowns, scrollbars and date pickers follow the color scheme */
+    :root {
+        color-scheme: light;
+    }
 
-/*}*/
+    .dark {
+        color-scheme: dark;
+    }
 
-/* Erst nachdem die Farben definiert sind, scannen wir die Quellen */
+    /* Form control tokens: the whole look in one place.
+     * Declared on :root and .dark so the values resolve correctly even when
+     * .dark is not set on the <html> element. */
+    :root,
+    .dark {
+        --control-bg: var(--color-surface-100);
+        --control-bg-disabled: var(--color-surface-200);
+        --control-text: var(--color-surface-900);
+        --control-placeholder: var(--color-surface-500);
+        --control-border: var(--color-surface-400);
+        --control-border-hover: var(--color-surface-500);
+        --control-border-focus: var(--color-accent-600);
+        --control-ring: color-mix(in oklab, var(--color-accent-500) 28%, transparent);
+        --control-radius: var(--radius-lg);
+    }
 
+    html {
+        font-size: var(--base-font-size);
+    }
 
-html {
-    font-size: var(--base-font-size);
+    body {
+        @apply text-secondary-500 bg-surface-50 antialiased;
+        font-family: var(--font-sans);
+    }
+
+    h1, h2, h3, h4, h5, h6 {
+        @apply text-primary-500 font-bold tracking-tight;
+    }
+
+    h1 {
+        @apply text-4xl md:text-5xl font-extrabold tracking-tighter leading-tight mb-4;
+    }
+
+    h2 {
+        @apply text-3xl md:text-4xl font-bold tracking-tight leading-snug mt-8 mb-4;
+    }
+
+    h3 {
+        @apply text-2xl font-semibold tracking-tight mt-6 mb-3;
+    }
+
+    h4 {
+        @apply text-xl font-semibold mt-5 mb-2;
+    }
+
+    h5 {
+        @apply text-lg font-medium mt-4 mb-2;
+    }
+
+    h6 {
+        @apply text-base font-medium uppercase tracking-wider mt-4 mb-2;
+    }
+
+    hr {
+        border: none;
+        height: 1px;
+        background-color: var(--color-surface-800);
+        margin: 2rem 0;
+    }
+
+    a {
+        @apply text-primary-700 hover:text-primary-900 transition-colors cursor-pointer duration-300 leading-tight;
+    }
+
+    /* Default icon size (Lucide, Heroicons); w-4, size-6 etc. override it */
+    svg {
+        @apply w-5 h-5;
+    }
 }
 
-body {
-    @apply text-secondary-500 bg-surface-50 antialiased;
-    font-family: theme('font-sans'), serif;
-}
 
-h1, h2, h3, h4, h5, h6 {
-    @apply text-primary-500 font-bold tracking-tight;
-}
+/* -----------------------------------------------------------------------------
+ * 4. Components
+ * -------------------------------------------------------------------------- */
+@layer components {
 
-h1 {
-    @apply text-4xl md:text-5xl font-extrabold tracking-tighter leading-tight mb-4
-}
+    /* ---- 4.1 Buttons, alerts, badges ------------------------------------- */
+    .btn-link {
+        @apply text-primary-700 hover:text-primary-900 transition-colors cursor-pointer duration-300 leading-tight;
+    }
 
-h2 {
-    @apply text-3xl md:text-4xl font-bold tracking-tight leading-snug mt-8 mb-4
-}
+    .btn {
+        @apply inline-flex items-center justify-center px-4 py-2 rounded-lg font-semibold transition-all duration-200 active:scale-95 disabled:opacity-50 disabled:pointer-events-none cursor-pointer;
 
-h3 {
-    @apply text-2xl font-semibold tracking-tight mt-6 mb-3
-}
-
-h4 {
-    @apply text-xl font-semibold mt-5 mb-2
-}
-
-h5 {
-    @apply text-lg font-medium mt-4 mb-2
-}
-
-h6 {
-    @apply text-base font-medium uppercase tracking-wider mt-4 mb-2
-}
-
-hr {
-    border: none;
-    height: 1px;
-    background-color: var(--color-surface-800);
-    margin: 2rem 0;
-}
-
-a, .btn-link {
-    @apply text-primary-700 hover:text-primary-900 transition-colors cursor-pointer duration-300 leading-tight;
-}
-
-.collapse-transition {
-    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-}
-
-/****************************************************************************
- * vm images on/off
- ****************************************************************************/
-.image-switch {
-    @apply p-2 mt-4 rounded-lg cursor-pointer;
-
-    width: 100%; /* Oder ein anderer dynamischer Wert wie 50vw */
-    aspect-ratio: 4 / 1; /* Das Seitenverhältnis EINES Zustands (z.B. 200px/50px) */
-
-    background-image: url('../images/switch-on-off-2.png');
-    background-repeat: no-repeat;
-
-    /* WICHTIG: Das Bild muss 100% breit, aber 200% hoch sein (da 2 Zustände) */
-    background-size: 100% 200%;
-
-    border: none;
-    /*cursor: pointer;*/
-    /*text-indent: -9999px; !* Versteckt den Text, falls nur das Bild sichtbar sein soll *!*/
-}
-
-.image-switch:disabled {
-    @apply cursor-default opacity-25;
-}
-
-.image-switch:hover {
-    filter: brightness(1.3); /* Macht den Button leicht heller */
-    transition: filter 0.2s;
-}
-
-/* Zustand: Aktiv (Oberes Bild) */
-.image-switch.on {
-    background-position: 0 0; /* 0% entspricht dem oberen Rand */
-}
-
-/* Zustand: Inaktiv (Unteres Bild) */
-.image-switch.off {
-    background-position: 0 100%; /* 100% entspricht dem unteren Rand */
-}
-
-.image-switch.pending {
-    @apply text-warning-200;
-    background-image: url('../images/switch-on-off-2-dark.png');
-    /*text-shadow: 0 0 7px rgba(255, 255, 255, 0.7),*/
-    /*0 0 15px theme('colors.danger-500'),*/
-    /*0 0 30px theme('colors.danger-500'),*/
-    /*0 0 50px theme('colors.danger-500');*/
-    background-position: 0 100%;
-    text-indent: 0;
-}
-
-.responsive-tabs {
-
-    .tab-button {
-        @apply border-b-2;
-
-        &.inactive {
-            @apply border-transparent text-secondary-600;
+        &.btn-primary {
+            @apply bg-accent-500 text-white hover:bg-accent-300 shadow-sm hover:shadow;
         }
 
-        &.active {
+        &.btn-secondary {
+            @apply bg-surface-200 text-primary-500 hover:bg-surface-300;
+        }
+
+        &.btn-danger {
+            @apply bg-error-500 text-white hover:opacity-90 shadow-sm;
+        }
+    }
+
+    .alert {
+        @apply p-4 rounded-lg border flex items-start gap-3 mb-4;
+
+        &.alert-success {
+            @apply bg-success-500/10 border-success-500/20 text-success-500;
+        }
+
+        &.alert-warning {
+            @apply bg-warning-500/10 border-warning-500/20 text-warning-500;
+        }
+
+        &.alert-error {
+            @apply bg-error-500/10 border-error-500/20 text-error-500;
+        }
+
+        &.alert-info {
+            @apply bg-info-500/10 border-info-500/20 text-info-500;
+        }
+    }
+
+    .badge {
+        @apply mx-1 px-1 py-1 text-nowrap rounded text-sm font-medium border;
+
+        &.badge-error {
+            @apply bg-error-500/10 text-error-500 border-error-500/20;
+        }
+
+        &.badge-warning {
+            @apply bg-warning-500/10 text-warning-500 border-warning-500/20;
+        }
+
+        &.badge-success {
+            @apply bg-success-500/10 text-success-500 border-success-500/20;
+        }
+
+        &.badge-info {
+            @apply bg-info-500/10 text-info-500 border-info-500/20;
+        }
+
+        &.badge-muted {
+            @apply bg-muted-500/10 text-muted-500 border-muted-500/20;
+        }
+    }
+
+
+    /* ---- 4.2 Form controls ----------------------------------------------- *
+     * Everything goes through :where() (specificity 0): utilities and modifiers
+     * such as .control-sm always win. Colors and radius come from the --control-*
+     * tokens in section 3.
+     *
+     * Note on TallStackUI: its form components draw the frame on a wrapper and keep
+     * the inner control transparent (border-0, bg-transparent), so these rules
+     * barely apply there; section 5 adjusts the wrappers.
+     * ---------------------------------------------------------------------- */
+    /* Text-like fields. An explicit type list instead of "everything except
+     * checkbox/radio", which would also hit hidden, submit, range, color etc. */
+    :where(
+        input:not([type]),
+        input[type="text"],
+        input[type="email"],
+        input[type="password"],
+        input[type="number"],
+        input[type="search"],
+        input[type="tel"],
+        input[type="url"],
+        input[type="date"],
+        input[type="datetime-local"],
+        input[type="time"],
+        input[type="month"],
+        input[type="week"],
+        textarea,
+        select
+    ) {
+        display: block;
+        width: 100%;
+        padding: 0.5rem 0.75rem;
+        border: 1px solid var(--control-border);
+        border-radius: var(--control-radius);
+        background-color: var(--control-bg);
+        color: var(--control-text);
+        line-height: 1.5;
+        box-shadow: none;
+        transition: border-color 0.15s ease, box-shadow 0.15s ease, background-color 0.15s ease;
+
+        &::placeholder {
+            color: var(--control-placeholder);
+            opacity: 1; /* Firefox otherwise dims placeholders a second time */
+        }
+
+        &:hover:not(:disabled, [readonly]) {
+            border-color: var(--control-border-hover);
+        }
+
+        &:focus {
+            outline: 2px solid transparent; /* stays visible in Windows high-contrast mode */
+            outline-offset: 2px;
+            border-color: var(--control-border-focus);
+            box-shadow: 0 0 0 3px var(--control-ring);
+        }
+
+        &:disabled {
+            cursor: not-allowed;
+            opacity: 0.55;
+            background-color: var(--control-bg-disabled);
+        }
+
+        /* Read-only: looks like text with a hinted frame rather than an editable field */
+
+        &[readonly] {
+            border-style: dashed;
+            background-color: transparent;
+            cursor: default;
+        }
+
+        &[readonly]:focus {
+            border-color: var(--control-border-hover);
+            box-shadow: none;
+        }
+
+        /* Error: aria-invalid="true" (Livewire/Blade) or the .is-invalid class */
+
+        &:is([aria-invalid="true"], .is-invalid) {
+            --control-border: var(--color-error-500);
+            --control-border-hover: var(--color-error-600);
+            --control-border-focus: var(--color-error-500);
+            --control-ring: color-mix(in oklab, var(--color-error-500) 25%, transparent);
+        }
+
+        /* Browser autofill would otherwise override background and text color */
+
+        &:-webkit-autofill {
+            -webkit-text-fill-color: var(--control-text);
+            caret-color: var(--control-text);
+            box-shadow: 0 0 0 100rem var(--control-bg) inset;
+        }
+
+        &:-webkit-autofill:focus {
+            box-shadow: 0 0 0 100rem var(--control-bg) inset, 0 0 0 3px var(--control-ring);
+        }
+    }
+
+    :where(textarea) {
+        min-height: 6rem;
+        resize: vertical;
+    }
+
+    /* Select: @tailwindcss/forms provides the arrow (set background-color only,
+     * not "background", or the arrow disappears). Option backgrounds are opaque
+     * on purpose: transparency inside <option> renders wrongly in some browsers. */
+    :where(select:not([multiple])) {
+        padding-right: 2.5rem;
+        cursor: pointer;
+        text-overflow: ellipsis;
+    }
+
+    :where(select) option {
+        background-color: var(--control-bg);
+        color: var(--control-text);
+    }
+
+    /* File input */
+    :where(input[type="file"]) {
+        display: block;
+        width: 100%;
+        padding: 0.375rem;
+        border: 1px solid var(--control-border);
+        border-radius: var(--control-radius);
+        background-color: var(--control-bg);
+        color: var(--color-surface-700);
+        font-size: var(--text-sm);
+        cursor: pointer;
+        transition: border-color 0.15s ease;
+
+        &:hover {
+            border-color: var(--control-border-hover);
+        }
+
+        &::file-selector-button {
+            margin-right: 0.75rem;
+            padding: 0.375rem 0.75rem;
+            border: 0;
+            border-radius: var(--radius-md);
+            background-color: var(--color-surface-200);
+            color: var(--color-surface-900);
+            font-weight: 600;
+            cursor: pointer;
+            transition: background-color 0.15s ease;
+        }
+
+        &:hover::file-selector-button {
+            background-color: var(--color-surface-300);
+        }
+    }
+
+    /* Checkbox and radio: @tailwindcss/forms fills the "checked" state with
+     * currentColor, hence the text color. accent-500 is identical in both modes
+     * and carries the white checkmark well. */
+    :where(input[type="checkbox"], input[type="radio"]) {
+        width: 1.125rem;
+        height: 1.125rem;
+        border: 1px solid var(--control-border);
+        background-color: var(--color-surface-50);
+        color: var(--color-accent-500);
+        cursor: pointer;
+        transition: border-color 0.15s ease, background-color 0.15s ease;
+
+        &:hover:not(:disabled) {
+            border-color: var(--control-border-hover);
+        }
+
+        /* Mouse: no ring. Keyboard: visible focus. */
+
+        &:focus {
+            outline: 2px solid transparent;
+            outline-offset: 2px;
+            box-shadow: none;
+        }
+
+        &:focus-visible {
+            outline-color: var(--control-border-focus);
+        }
+
+        &:disabled {
+            cursor: not-allowed;
+            opacity: 0.55;
+        }
+    }
+
+    :where(input[type="checkbox"]) {
+        border-radius: var(--radius-sm);
+    }
+
+    /* Compact variant for tables and dense forms:
+     *   <input class="control-sm"> / <select class="control-sm"> */
+    .control-sm {
+        padding: 0.25rem 0.5rem;
+        border-radius: var(--radius-md);
+        font-size: var(--text-sm);
+    }
+
+    select.control-sm:not([multiple]) {
+        padding-right: 2rem;
+    }
+
+    /* Boxed row for toggles and other non-text controls. Replaces the long utility
+     * lists that imitate a field in Blade (p-3 border rounded-lg bg-... etc.). */
+    .control-box {
+        display: flex;
+        width: 100%;
+        padding: 0.75rem;
+        border: 1px solid var(--control-border);
+        border-radius: var(--control-radius);
+        background-color: var(--control-bg);
+        color: var(--control-text);
+        cursor: pointer;
+        transition: border-color 0.15s ease, box-shadow 0.15s ease;
+
+        &:hover {
+            border-color: var(--control-border-hover);
+        }
+
+        &:focus-within {
+            border-color: var(--control-border-focus);
+            box-shadow: 0 0 0 3px var(--control-ring);
+        }
+    }
+
+    /* Square icon button with the same height as a field (2.625rem), e.g. the "..."
+     * menu next to the search input in a data table header. */
+    .control-icon {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        flex-shrink: 0;
+        width: 2.625rem;
+        height: 2.625rem;
+        border: 1px solid var(--control-border);
+        border-radius: var(--control-radius);
+        background-color: var(--control-bg);
+        color: var(--control-text);
+        cursor: pointer;
+        transition: border-color 0.15s ease, background-color 0.15s ease;
+
+        &:hover {
+            border-color: var(--control-border-hover);
+            background-color: var(--color-surface-200);
+        }
+
+        &:focus-visible {
+            outline: 2px solid var(--control-border-focus);
+            outline-offset: 2px;
+        }
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+        :where(input, textarea, select) {
+            transition: none;
+        }
+    }
+
+
+    /* ---- 4.3 Form layout ------------------------------------------------- */
+    .dt-edit-form {
+        @apply border rounded-md border-surface-300 bg-surface-100/50 p-4;
+
+        .data-table-2t-default {
+            @apply bg-surface-300/20 p-4;
+
+            .wrapper-table-selected-relations {
+                @apply border border-primary-500 rounded-lg;
+                animation: pulse-to-bg 300ms cubic-bezier(0.4, 0, 0.6, 1) forwards;
+            }
+
+            .wrapper-table-unselected-relations {
+                @apply border border-secondary-500 rounded-lg;
+            }
+        }
+
+        .form-title {
+            @apply text-info-500 mb-4;
+        }
+    }
+
+    .form-group-container {
+        @apply w-full grid grid-cols-1 md:grid-cols-2 gap-4;
+    }
+
+    .form-group {
+        @apply py-4;
+    }
+
+    /* responsive: two columns from lg */
+    .form-group-responsive-half {
+        @apply lg:col-span-1;
+    }
+
+    /* responsive: always full width */
+    .form-group-responsive-full {
+        @apply col-span-full;
+    }
+
+    .form-text {
+        @apply text-muted-600 text-sm italic;
+    }
+
+    .form-text-accent {
+        @apply text-muted-500;
+    }
+
+    .force-scan {
+        @apply bg-surface-50 text-accent-500;
+    }
+
+    .dt-form-backdrop {
+        display: none;
+        width: 0;
+        height: 0;
+
+        .backdrop {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: midnightblue;
+            opacity: .33;
+        }
+    }
+
+
+    /* ---- 4.4 Tabs --------------------------------------------------------- */
+    .responsive-tabs {
+
+        .tab-button {
+            @apply border-b-2;
+
+            &.inactive {
+                @apply border-transparent text-secondary-600;
+            }
+
+            &.active {
+                @apply border-primary-700 text-primary-600;
+            }
+        }
+
+        .tab-button:hover {
             @apply border-primary-700 text-primary-600;
         }
-
     }
 
-    .tab-button:hover {
-        @apply border-primary-700 text-primary-600;
-    }
-}
-
-/****************************************************************************
- * Tab Controls
- ****************************************************************************/
-.tabs-content {
-}
-
-.tab-pane {
-    @apply p-6 bg-surface-100/50 rounded-xl;
-}
-
-/****************************************************************************
- * Forms
- ****************************************************************************/
-.dt-edit-form {
-    @apply border rounded-md border-surface-300 bg-surface-100/50 p-4;
-
-    .card-body {
-        .card-header {
-        }
+    .tab-pane {
+        @apply p-6 bg-surface-100/50 rounded-xl;
     }
 
-    .data-table-2t-default {
 
-        @apply bg-surface-300/20 p-4;
+    /* ---- 4.5 Tables and sorting ------------------------------------------- */
+    .table {
+        width: 100%;
+        border: none;
 
-        .table-wrapper {
-
-            /*font-size: 0.8rem;*/
-
-            select, input, textarea, button {
-                /*font-size: 0.8rem;*/
-            }
-
-        }
-
-        .wrapper-table-selected-relations {
-
-            @apply border border-primary-500 rounded-lg;
-            animation: pulse-to-bg 300ms cubic-bezier(0.4, 0, 0.6, 1) forwards;
-
-            .table-selected-relations {
-            }
-
-        }
-
-        .wrapper-table-unselected-relations {
-
-            @apply border border-secondary-500 rounded-lg;
-
-            .table-unselected-relations {
-
-            }
-
-        }
-    }
-
-    .form-title {
-        @apply text-info-500 mb-4;
-    }
-}
-
-.dt-edit-form.readonly {
-
-    .card-body {
-        .card-header {
-        }
-
-        .card-text {
-
-            label {
-            }
-
-            .form-grid {
-
-                label {
-                }
-            }
-        }
-    }
-}
-
-.form-group-container {
-    /*@apply grid grid-cols-2 gap-4;*/
-    @apply w-full grid grid-cols-1 md:grid-cols-2 gap-4;
-}
-
-.form-group {
-
-    @apply py-4;
-
-    .image-box {
-        .fake-img {
-        }
-    }
-
-    .default-value {
-    }
-
-}
-
-/* responsive 2 columns lg */
-.form-group-responsive-half {
-    @apply lg:col-span-1;
-    /*@apply col-span-full lg:w-1/2;*/
-}
-
-/* responsive 1 column fix */
-.form-group-responsive-full {
-    @apply col-span-full;
-}
-
-.form-text {
-    @apply text-muted-600 text-sm italic;
-}
-
-.form-text-accent {
-    @apply text-muted-500;
-}
-
-/****************************************************************************
- * Module Form
- ****************************************************************************/
-/****************************************************************************
- * Module DataTable
- * The whole form area inclusive main data-table to edit rows
- * for this form.
- ****************************************************************************/
-.table {
-
-    width: 100%;
-    border: none;
-
-    th {
-        /*font-size: 0.75rem;*/
-    }
-
-    td {
-        .image-content {
-            display: inline-block;
-            text-align: center;
-
-            .image-box {
+        td {
+            .image-content {
                 display: inline-block;
-                vertical-align: center;
-                width: 64px;
-                height: 64px;
+                text-align: center;
 
-                img {
-                    height: 100%;
-                }
-            }
-
-            .image-box.small {
-                width: 48px;
-                height: 48px;
-
-                img {
-                    height: 100%;
-                }
-            }
-
-        }
-    }
-
-    .dt-interaction {
-        /*@apply cursor-pointer opacity-70 hover:opacity-100;*/
-        @apply cursor-pointer transition-all hover:drop-shadow-[0_0_8px_rgba(255,255,255,0.7)];
-    }
-
-}
-
-.website-base-dt-forms {
-
-    .card {
-
-        .card-body {
-
-            .card-header {
-            }
-
-            .card-text {
-
-                .tabs-content {
-                }
-
-                .image-box :not(td) {
+                .image-box {
+                    display: inline-block;
+                    width: 64px;
+                    height: 64px;
 
                     img {
+                        height: 100%;
                     }
                 }
 
-            }
+                .image-box.small {
+                    width: 48px;
+                    height: 48px;
 
-            .form-grid {
-
-                .data-table-default {
-                }
-
-                label {
+                    img {
+                        height: 100%;
+                    }
                 }
             }
         }
-    }
-}
 
-
-.header-label {
-    cursor: pointer;
-}
-
-.header-sort-icons {
-    @apply cursor-default;
-}
-
-.header-sort-icon {
-
-    @apply border border-surface-100 hover:border-surface-400;
-
-    &.header-sort-icon-up {
+        .dt-interaction {
+            @apply cursor-pointer transition-all hover:drop-shadow-[0_0_8px_rgba(255,255,255,0.7)];
+        }
     }
 
-    &.header-sort-icon-down {
+    .header-label {
+        cursor: pointer;
     }
-}
+
+    .header-sort-icons {
+        @apply cursor-default;
+    }
+
+    .header-sort-icon {
+        @apply border border-surface-100 hover:border-surface-400;
+    }
+
+    .icon-status-sorted svg {
+        @apply text-accent-500!;
+    }
+
+    .icon-status-default svg {
+        @apply text-secondary-700!;
+    }
 
 
-.empty-list {
-}
-
-.data-table-default {
-
+    /* ---- 4.6 Responsive visibility per layout type ------------------------ */
     .layout-table-responsive {
-    }
+        td, th {
+            &.show-xl {
+                @apply table-cell max-xl:hidden;
+            }
 
-    .header-tools {
-    }
+            &.show-lg {
+                @apply table-cell max-lg:hidden;
+            }
 
-    .footer-tools {
+            &.show-md {
+                @apply table-cell max-md:hidden;
+            }
 
-        .footer-actions {
-        }
-    }
-
-}
-
-.data-table-2t-default {
-
-    .table-wrapper {
-
-        .description {
-        }
-
-        .header {
-
-            .filtered {
+            &.show-sm {
+                @apply table-cell max-sm:hidden;
             }
         }
+    }
 
-        .body {
-
+    .layout-inline-block-responsive {
+        .show-xl {
+            @apply inline-block max-xl:hidden;
         }
 
-        .footer {
+        .show-lg {
+            @apply inline-block max-lg:hidden;
+        }
+
+        .show-md {
+            @apply inline-block max-md:hidden;
+        }
+
+        .show-sm {
+            @apply inline-block max-sm:hidden;
         }
     }
 
-}
+    .layout-block-responsive {
+        .show-xl {
+            @apply block max-xl:hidden;
+        }
 
-.dt-form-backdrop {
-    display: none;
-    width: 0;
-    height: 0;
+        .show-lg {
+            @apply block max-lg:hidden;
+        }
 
-    .backdrop {
+        .show-md {
+            @apply block max-md:hidden;
+        }
+
+        .hide-md {
+            @apply block md:hidden;
+        }
+
+        .show-sm {
+            @apply block max-sm:hidden;
+        }
+    }
+
+    .layout-flex-responsive {
+        .show-xl {
+            @apply flex max-xl:hidden;
+        }
+
+        .hide-xl {
+            @apply block xl:hidden;
+        }
+
+        .show-lg {
+            @apply flex max-lg:hidden;
+        }
+
+        .hide-lg {
+            @apply block lg:hidden;
+        }
+
+        .show-md {
+            @apply flex max-md:hidden;
+        }
+
+        .hide-md {
+            @apply block md:hidden;
+        }
+
+        .show-sm {
+            @apply flex max-sm:hidden;
+        }
+
+        .hide-sm {
+            @apply block sm:hidden;
+        }
+    }
+
+
+    /* ---- 4.7 Switches ----------------------------------------------------- */
+    /* VM on/off: image with two states (top = on, bottom = off) */
+    .image-switch {
+        @apply p-2 mt-4 rounded-lg cursor-pointer;
+
+        width: 100%;
+        aspect-ratio: 4 / 1; /* aspect ratio of ONE state */
+        background-image: url('../images/switch_on_off.webp');
+        background-repeat: no-repeat;
+        background-size: 100% 200%; /* 100 % wide, 200 % tall (two states) */
+        border: none;
+
+        &:disabled {
+            @apply cursor-default opacity-25;
+        }
+
+        &:hover {
+            filter: brightness(1.3);
+            transition: filter 0.2s;
+        }
+
+        &.on {
+            background-position: 0 0;
+        }
+
+        &.off {
+            background-position: 0 100%;
+        }
+
+        &.pending {
+            @apply text-warning-200;
+            background-image: url('../images/switch_on_off_dark.webp');
+            background-position: 0 100%;
+            text-indent: 0;
+        }
+    }
+
+    /* Three-state switch (radio buttons) */
+    .switch3-container h5 {
+        margin-bottom: .7rem;
+    }
+
+    .switch3 {
+        display: inline-block;
+        padding: 1px;
+        white-space: nowrap;
+
+        input {
+            display: none;
+        }
+
+        label {
+            padding: .4rem;
+            cursor: pointer;
+        }
+    }
+
+
+    /* ---- 4.8 Overlays and animation ----------------------------------------- */
+    .fullscreen-overlay {
+        height: 100%;
+        width: 100%;
         position: fixed;
+        z-index: 1;
         top: 0;
         left: 0;
-        width: 100%;
-        height: 100%;
-        background: midnightblue;
-        opacity: .33;
-    }
-}
-
-/****************************************************************************
- * Switch 3 states
- ****************************************************************************/
-.switch3-container h5 {
-    margin-bottom: .7rem;
-}
-
-.switch3 {
-    display: inline-block;
-    padding: 1px;
-    white-space: nowrap;
-}
-
-.switch3 input {
-    display: none;
-}
-
-.switch3 label {
-    padding: .4rem;
-    cursor: pointer;
-}
-
-.switch3 label:hover {
-}
-
-.switch3 input[type="radio"]:not(.unused):checked + label {
-}
-
-.force-scan {
-    @apply bg-surface-50 text-accent-500;
-}
-
-.layout-table-responsive {
-    td, th {
-        &.show-xl {
-            @apply table-cell max-xl:hidden;
-        }
-
-        &.show-lg {
-            @apply table-cell max-lg:hidden;
-        }
-
-        &.show-md {
-            @apply table-cell max-md:hidden;
-        }
-
-        &.show-sm {
-            @apply table-cell max-sm:hidden;
-        }
-    }
-}
-
-
-.layout-inline-block-responsive {
-    .show-xl {
-        @apply inline-block max-xl:hidden
+        background-color: rgba(0, 0, 0, 0.4);
+        overflow-x: hidden;
+        transition: 0.5s;
     }
 
-    .show-lg {
-        @apply inline-block max-lg:hidden
+    .fullscreen-overlay-content {
+        background-color: rgba(0, 0, 0, 0.3);
+        color: white;
+        position: relative;
+        width: 200px;
+        text-align: center;
+        padding: 12px;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
     }
 
-    .show-md {
-        @apply inline-block max-md:hidden
-    }
+    .popover-box {
+        /* Top-layer positioning */
+        position: fixed;
+        inset: auto;
+        margin: 0;
+        z-index: 1000;
 
-    .show-sm {
-        @apply inline-block max-sm:hidden
-    }
-}
+        /* Interaction-safe */
+        pointer-events: none;
 
-.layout-block-responsive {
-    .show-xl {
-        @apply block max-xl:hidden
-    }
+        /* Design tokens */
+        background-color: var(--color-surface-50);
+        border: 1px solid var(--color-surface-200);
+        border-radius: var(--radius-xl);
+        box-shadow: var(--shadow-2xl);
+        padding: 0.75rem;
 
-    .show-lg {
-        @apply block max-lg:hidden
-    }
-
-    .show-md {
-        @apply block max-md:hidden
-    }
-
-    .hide-md {
-        @apply block md:hidden
-    }
-
-    .show-sm {
-        @apply block max-sm:hidden
-    }
-}
-
-.layout-flex-responsive {
-    .show-xl {
-        @apply flex max-xl:hidden
-    }
-
-    .hide-xl {
-        @apply block xl:hidden
-    }
-
-    .show-lg {
-        @apply flex max-lg:hidden
-    }
-
-    .hide-lg {
-        @apply block lg:hidden
-    }
-
-    .show-md {
-        @apply flex max-md:hidden
-    }
-
-    .hide-md {
-        @apply block md:hidden
-    }
-
-    .show-sm {
-        @apply flex max-sm:hidden
-    }
-
-    .hide-sm {
-        @apply block sm:hidden
-    }
-}
-
-
-/*.show-cell-xl {*/
-/*    @apply table-cell max-xl:hidden*/
-/*}*/
-/*.show-cell-lg {*/
-/*    @apply table-cell max-lg:hidden*/
-/*}*/
-/*.show-cell-md {*/
-/*    @apply table-cell max-md:hidden*/
-/*}*/
-/*.show-cell-sm {*/
-/*    @apply table-cell max-sm:hidden*/
-/*}*/
-.icon-status-sorted svg {
-    @apply text-accent-500!;
-}
-
-.icon-status-default svg {
-    @apply text-secondary-700!;
-}
-
-
-input[type="text"], input[type="email"], input[type="password"], input[type="number"], textarea, select {
-    @apply p-3 bg-surface-200/50 border border-surface-300/50 text-info-800 rounded-lg focus:ring-accent-800 block w-full transition duration-200;
-}
-
-select {
-    option {
-        @apply bg-surface-200/50 text-secondary-900;
-    }
-}
-
-.btn {
-    @apply inline-flex items-center justify-center px-4 py-2 rounded-lg font-semibold transition-all duration-200 active:scale-95 disabled:opacity-50 disabled:pointer-events-none cursor-pointer;
-
-    &.btn-primary {
-        @apply bg-accent-500 text-white hover:bg-accent-300 shadow-sm hover:shadow;
-    }
-
-    &.btn-secondary {
-        @apply bg-surface-200 text-primary-500 hover:bg-surface-300;
-    }
-
-    &.btn-danger {
-        @apply bg-error-500 text-white hover:opacity-90 shadow-sm;
-    }
-}
-
-.alert {
-    @apply p-4 rounded-lg border flex items-start gap-3 mb-4;
-
-    &.alert-success {
-        @apply bg-success-500/10 border-success-500/20 text-success-500;
-    }
-
-    &.alert-warning {
-        @apply bg-warning-500/10 border-warning-500/20 text-warning-500;
-    }
-
-    &.alert-error {
-        @apply bg-error-500/10 border-error-500/20 text-error-500;
-    }
-
-    &.alert-info {
-        @apply bg-info-500/10 border-info-500/20 text-info-500;
-    }
-}
-
-.badge {
-    @apply mx-1 px-1 py-1 text-nowrap rounded text-sm font-medium border;
-
-    &.badge-error {
-        @apply bg-error-500/10 text-error-500 border-error-500/20;
-    }
-
-    &.badge-warning {
-        @apply bg-warning-500/10 text-warning-500 border-warning-500/20;
-    }
-
-    &.badge-success {
-        @apply bg-success-500/10 text-success-500 border-success-500/20;
-    }
-
-    &.badge-info {
-        @apply bg-info-500/10 text-info-500 border-info-500/20;
-    }
-
-    &.badge-muted {
-        @apply bg-muted-500/10 text-muted-500 border-muted-500/20;
-    }
-}
-
-/*@media (min-width: 768px) {*/
-/*    .force-grid {*/
-/*        display: grid !important;*/
-/*        grid-template-columns: repeat(3, minmax(0, 1fr)) !important;*/
-/*    }*/
-/*}*/
-
-
-/*---------------------------------------------------------*/
-/*Fullscreen overlay*/
-/*---------------------------------------------------------*/
-.fullscreen-overlay {
-    height: 100%;
-    width: 100%;
-    position: fixed;
-    z-index: 1;
-    top: 0;
-    left: 0;
-    /*background-color: rgb(0,0,0);*/
-    background-color: rgba(0, 0, 0, 0.4);
-    overflow-x: hidden;
-    transition: 0.5s;
-    /*opacity: 0.5;*/
-}
-
-.fullscreen-overlay-content {
-    background-color: rgba(0, 0, 0, 0.3);
-    color: white;
-    position: relative;
-    width: 200px;
-    text-align: center;
-    padding: 12px;
-    /*position: fixed;*/
-    top: 50%;
-    left: 50%;
-    /* bring your own prefixes */
-    transform: translate(-50%, -50%);
-}
-
-.popover-box {
-    /* Top-layer positioning */
-    position: fixed;
-    inset: auto;
-    margin: 0;
-    z-index: 1000;
-
-    /* Interaction-safe */
-    pointer-events: none;
-
-    /* Design tokens (Tailwind v4 Semantic) */
-    background-color: var(--color-surface-50);
-    border: 1px solid var(--color-surface-200);
-    border-radius: var(--radius-xl);
-    box-shadow: var(--shadow-2xl);
-    padding: 0.75rem;
-
-    /* Performance optimized transitions */
-    opacity: 0;
-    scale: 0.96;
-    transition: opacity 0.15s cubic-bezier(0.4, 0, 0.2, 1),
-    scale 0.15s cubic-bezier(0.4, 0, 0.2, 1),
-    display 0.15s allow-discrete;
-}
-
-.popover-box:popover-open {
-    opacity: 1;
-    scale: 1;
-}
-
-@starting-style {
-    .popover-box:popover-open {
+        /* Performance optimized transitions */
         opacity: 0;
         scale: 0.96;
+        transition: opacity 0.15s cubic-bezier(0.4, 0, 0.2, 1),
+        scale 0.15s cubic-bezier(0.4, 0, 0.2, 1),
+        display 0.15s allow-discrete;
+    }
+
+    .popover-box:popover-open {
+        opacity: 1;
+        scale: 1;
+    }
+
+    @starting-style {
+        .popover-box:popover-open {
+            opacity: 0;
+            scale: 0.96;
+        }
+    }
+
+    .collapse-transition {
+        transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+
+    .animate-pulse-blue {
+        animation: proxmox-pulse-blue 10s cubic-bezier(0.4, 0, 0.2, 1) forwards;
     }
 }
 
-/* Ensure Lucide icons inherit dimensions in Tailwind v4 */
-svg {
-    @apply w-5 h-5;
+
+/* -----------------------------------------------------------------------------
+ * 5. Overrides (TallStackUI)
+ *    A layer of its own AFTER the utilities: only here may custom rules beat the
+ *    utility classes of third-party components. Keep it small, and re-check the
+ *    selectors after TallStackUI updates, because they depend on its markup.
+ * -------------------------------------------------------------------------- */
+@layer overrides {
+
+    /* Alpine: hidden until Alpine has initialized the element (like hints with x-show) */
+    [x-cloak] {
+        display: none !important;
+    }
+
+    /* TallStackUI form wrapper (input, number, date, textarea, upload, ...).
+     * The visible box is the wrapper div; the controls inside are transparent.
+     * "ring-1" plus "focus-within:ring-2" is the signature all of them share.
+     * Look and states mirror the plain controls in 4.2 (same --control-* tokens,
+     * so dark mode works without dark: variants). */
+    div.ring-1[class~="focus-within:ring-2"]:has(input, textarea) {
+        border: 1px solid var(--control-border);
+        border-radius: var(--control-radius);
+        background-color: var(--control-bg);
+        color: var(--control-text);
+        box-shadow: none; /* replaces the TallStackUI ring (ring-1 / focus-within:ring-2) */
+        transition: border-color 0.15s ease, box-shadow 0.15s ease, background-color 0.15s ease;
+
+        &:hover {
+            border-color: var(--control-border-hover);
+        }
+
+        &:focus-within {
+            border-color: var(--control-border-focus);
+            box-shadow: 0 0 0 3px var(--control-ring);
+        }
+
+        &:has(:is(input, textarea):disabled) {
+            border-color: var(--control-border);
+            background-color: var(--control-bg-disabled);
+            opacity: 0.55;
+            cursor: not-allowed;
+        }
+
+        &:has(:is(input, textarea)[readonly]) {
+            border-style: dashed;
+            background-color: transparent;
+        }
+
+        &:has(:is(input, textarea):is([aria-invalid="true"], .is-invalid)) {
+            --control-border: var(--color-error-500);
+            --control-border-hover: var(--color-error-600);
+            --control-border-focus: var(--color-error-500);
+            --control-ring: color-mix(in oklab, var(--color-error-500) 25%, transparent);
+        }
+
+        /* Same height as the plain fields (TallStackUI: py-1.5, text-sm).
+         * Horizontal padding stays untouched: TallStackUI uses e.g. pl-10 for icons. */
+
+        :is(input, textarea) {
+            padding-block: 0.5rem;
+            font-size: inherit;
+            line-height: 1.5;
+        }
+
+        /* Number stepper divider and the grey icons follow the palette */
+
+        button[class~="border-l"] {
+            border-color: var(--control-border);
+        }
+
+        svg[class~="text-gray-500"] {
+            color: var(--control-placeholder);
+
+            &[class~="hover:text-red-500"]:hover {
+                color: var(--color-error-500);
+            }
+        }
+    }
+
+    /* TallStackUI native select: the wrapper classes (ring, border-0, bg-white) sit
+     * on the <select> itself, so it is styled directly. "form-select" is the hook. */
+    select.form-select {
+        border: 1px solid var(--control-border);
+        border-radius: var(--control-radius);
+        background-color: var(--control-bg);
+        color: var(--control-text);
+        box-shadow: none;
+        padding-block: 0.5rem;
+        font-size: inherit;
+        line-height: 1.5;
+        transition: border-color 0.15s ease, box-shadow 0.15s ease, background-color 0.15s ease;
+
+        &:hover:not(:disabled) {
+            border-color: var(--control-border-hover);
+        }
+
+        &:focus {
+            border-color: var(--control-border-focus);
+            box-shadow: 0 0 0 3px var(--control-ring);
+        }
+
+        &:disabled {
+            background-color: var(--control-bg-disabled);
+            opacity: 0.55;
+            cursor: not-allowed;
+        }
+
+        &:is([aria-invalid="true"], .is-invalid) {
+            --control-border: var(--color-error-500);
+            --control-border-hover: var(--color-error-600);
+            --control-border-focus: var(--color-error-500);
+            --control-ring: color-mix(in oklab, var(--color-error-500) 25%, transparent);
+        }
+    }
+
+    /* TallStackUI styled select (trigger). The button itself is the box.
+     * aria-haspopup="listbox" is a stable hook, independent of utility classes. */
+    button[aria-haspopup="listbox"] {
+        border: 1px solid var(--control-border);
+        border-radius: var(--control-radius);
+        background-color: var(--control-bg);
+        color: var(--control-text);
+        box-shadow: none;
+        padding-block: 0.5rem;
+        font-size: inherit;
+        transition: border-color 0.15s ease, box-shadow 0.15s ease, background-color 0.15s ease;
+
+        &:hover:not(:disabled) {
+            border-color: var(--control-border-hover);
+        }
+
+        &:focus,
+        &[aria-expanded="true"] {
+            border-color: var(--control-border-focus);
+            box-shadow: 0 0 0 3px var(--control-ring);
+        }
+
+        &:disabled {
+            background-color: var(--control-bg-disabled);
+            opacity: 0.55;
+            cursor: not-allowed;
+        }
+
+        /* Selected value first, placeholder second (same specificity, last one wins) */
+
+        span[class~="text-gray-600"] {
+            color: var(--control-text);
+        }
+
+        span[class~="text-gray-400"] {
+            color: var(--control-placeholder);
+        }
+
+        /* Chevron and clear icons; keep the red hover on the clear icon */
+
+        svg[class~="text-gray-500"] {
+            color: var(--control-placeholder);
+
+            &[class~="hover:text-red-500"]:hover {
+                color: var(--color-error-500);
+            }
+        }
+
+        /* Chips of a multiple select */
+
+        div[class~="ring-inset"][class~="bg-gray-100"] {
+            background-color: var(--color-surface-200);
+            color: var(--control-text);
+            box-shadow: inset 0 0 0 1px var(--control-border);
+        }
+    }
+
+    /* TallStackUI floating panels (select list, upload panel), teleported to <body>.
+     * Careful: this layer beats utilities, including hover/focus states, so hover
+     * styles are only set where TallStackUI has no hover cue of its own. */
+    [data-floating] {
+        border-color: var(--color-surface-300);
+        border-radius: var(--control-radius);
+        background-color: var(--control-bg); /* same surface as the field it belongs to */
+        color: var(--control-text);
+        box-shadow: var(--shadow-lg);
+
+        li[role="option"] {
+            color: var(--color-surface-700);
+
+            &:hover:not([class~="font-semibold"]),
+            &:focus:not([class~="font-semibold"]) {
+                background-color: var(--color-surface-100);
+                color: var(--control-text);
+            }
+
+            /* Selected: tinted. TallStackUI keeps its red hover (click = deselect). */
+
+            &[class~="font-semibold"]:not(:hover) {
+                background-color: color-mix(in oklab, var(--color-accent-500) 12%, transparent);
+                color: var(--color-accent-600);
+            }
+
+            &[class~="cursor-not-allowed!"] {
+                background-color: var(--color-surface-200);
+                color: var(--control-placeholder);
+            }
+        }
+
+        span[class~="text-gray-600"] {
+            color: var(--control-text);
+        }
+    }
+
+    /* TallStackUI toggle: track colors follow the palette (accent instead of primary).
+     * input.peer is the knob; its next sibling div is the track. */
+    input[type="checkbox"].peer + div[class~="rounded-full"] {
+        background-color: var(--color-surface-300);
+        transition: background-color 0.15s ease;
+    }
+
+    input[type="checkbox"].peer:checked + div[class~="rounded-full"] {
+        background-color: var(--color-accent-500);
+    }
+
+    /* TallStackUI removes the toggle's focus ring (ring-0); restore a visible keyboard focus */
+    input[type="checkbox"].peer:focus-visible + div[class~="rounded-full"] {
+        outline: 2px solid var(--control-border-focus);
+        outline-offset: 2px;
+    }
+
+    /* Keep the form overlay visible while the browser loads the redirect target
+     * (html.is-redirecting is set by redirect-overlay.js) */
+    html.is-redirecting .form-loading-overlay {
+        display: flex !important;
+    }
 }
 
-/**
- * Proxmox Pulse Animation
- * Transitions from bright blue glow to deep dark blue over 10s
- */
+
+/* -----------------------------------------------------------------------------
+ * 6. Keyframes
+ * -------------------------------------------------------------------------- */
+
+/* Proxmox pulse: from a bright blue glow to deep dark blue over 10 s */
 @keyframes proxmox-pulse-blue {
     0% {
         background-color: var(--color-blue-400);
@@ -1041,18 +1361,12 @@ svg {
     }
 }
 
+/* Short swing from the current background to green and back */
 @keyframes pulse-to-bg {
     0%, 100% {
-        /* Starts and ends at the current dynamic background variable */
         background-color: var(--color-surface-100);
     }
     50% {
-        /* Pulses to your semantic green color in the middle of the cycle */
         background-color: var(--color-green-500);
     }
 }
-
-.animate-pulse-blue {
-    animation: proxmox-pulse-blue 10s cubic-bezier(0.4, 0, 0.2, 1) forwards;
-}
-

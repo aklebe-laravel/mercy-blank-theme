@@ -1,5 +1,7 @@
 @php
     use Modules\WebsiteBase\app\View\Components\Menu\Main;
+
+    /** @var array $items */
 @endphp
 
 @foreach($items as $navItem)
@@ -12,31 +14,36 @@
         $baseClasses = \Illuminate\Support\Arr::toCssClasses([
             'flex items-center justify-between px-4 py-2 text-sm rounded-lg transition-colors focus:outline-none w-full',
             'bg-secondary-50 text-secondary-600 font-semibold' => $isDeepActive,
-            'text-surface-700 hover:bg-surface-100 hover:text-secondary-500' => !$isDeepActive
+            'text-surface-700 hover:bg-surface-100 hover:text-secondary-500' => !$isDeepActive,
         ]);
     @endphp
 
     <div x-data="{ open: false }" class="px-2 relative group/sub" @mouseenter="open = true" @mouseleave="open = false">
         <x-menu-link :item="$item" :base-classes="$baseClasses" x-ref="subAnchor">
-            <div class="flex items-center gap-3">
-                @if($icon = $item->attributes['icon_class'] ?? null)
-                    <x-dynamic-component :component="'lucide-'.$icon"
-                                         class="w-4 h-4 transition-colors"
-                                         x-bind:class="(open || {{ $isDeepActive ? 'true' : 'false' }}) ? 'text-secondary-500' : 'text-surface-400'"
+            @if($item->title)
+                <div class="flex items-center gap-3">
+                    @if($icon = $item->attributes['icon_class'] ?? null)
+                        <x-dynamic-component :component="'lucide-'.$icon"
+                                             class="w-4 h-4 transition-colors"
+                                             x-bind:class="(open || {{ $isDeepActive ? 'true' : 'false' }}) ? 'text-secondary-500' : 'text-surface-400'"
+                        />
+                    @endif
+                    <span>{{ $item->title }}</span>
+                </div>
+
+                @if($hasChildren)
+                    <x-lucide-chevron-right class="w-4 h-4 transition-colors"
+                                            x-bind:class="open ? 'text-secondary-500' : 'text-surface-400'"
                     />
                 @endif
-                <span>{{ $item->title }}</span>
-            </div>
-
-            @if($hasChildren)
-                <x-lucide-chevron-right class="w-4 h-4 transition-colors"
-                                        x-bind:class="open ? 'text-secondary-500' : 'text-surface-400'"
-                />
+            @else
+                {{-- Entry without title: separator --}}
+                <div class="my-2 h-px w-full bg-surface-800/20" aria-hidden="true"></div>
             @endif
         </x-menu-link>
 
         @if($hasChildren)
-            {{-- Horizontal bridge for side-flyout --}}
+            {{-- Horizontal bridge for the side flyout --}}
             <div x-show="open" class="absolute w-3 h-full -right-3 top-0 bg-transparent z-40"></div>
 
             <div x-show="open"

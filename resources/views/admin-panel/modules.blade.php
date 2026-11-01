@@ -13,7 +13,5 @@
     ];
     $livewireTable = 'website-base::data-table.module';
     $livewireForm = 'website-base::form.module';
-    //$formObjectId = null;
-    //$isFormOpen = false;
 @endphp
 @include('website-base::components.data-tables.tables.split-dt-with-form')

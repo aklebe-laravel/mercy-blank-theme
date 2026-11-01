@@ -3,12 +3,11 @@
      * @var ?\Modules\WebsiteBase\app\Models\CmsPage $cmsPage the page object
      * @var string $content the parsed content, calculate by given format
      * @var string $title the parsed title, calculate by given format
-     *
      */
 @endphp
 <x-app-layout>
     <x-slot name="header">
-        <h1 class="font-semibold text-xl text-gray-800 leading-tight">
+        <h1 class="font-semibold text-xl leading-tight">
             {{ $cmsPage->name ?? '' }}
         </h1>
     </x-slot>
@@ -32,4 +31,5 @@
                 </p>
             </div>
         </div>
+    </div>
 </x-app-layout>

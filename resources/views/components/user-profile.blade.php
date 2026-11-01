@@ -9,7 +9,6 @@
         @livewire($livewireForm, [
             'formObjectId' => $formObjectId,
             'isFormOpen' => !!($formObjectId),
-            //'objectInstanceDefaultValues' => $objectInstanceDefaultValues,
         ],
         key('user-profile-form'))
     </div>

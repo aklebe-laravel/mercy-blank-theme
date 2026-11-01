@@ -1,7 +1,7 @@
 <x-auth-card>
     @include('auth.inc.header')
 
-    <div class="mb-4 text-sm text-gray-600">
+    <div class="mb-4 text-sm text-muted-500">
         {{ __('forgot_password_description') }}
     </div>
 

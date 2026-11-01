@@ -1,6 +1,6 @@
 <x-app-layout>
     <x-slot name="header">
-        <h1 class="font-semibold text-xl text-gray-800 leading-tight">
+        <h1 class="font-semibold text-xl leading-tight">
             {{ __('Contact') }}
         </h1>
     </x-slot>
@@ -12,11 +12,10 @@
                     {{ __('Send Request') }}
                 </h2>
                 <p>
-                    Wenn du Zugang zu unseren Telegram-Gruppen hast, dann versuche bitte uns
-                    dort zu konsultieren. Andernfalls kannst du dieses Formular nutzen:
+                    {{ __('contact_telegram_hint') }}
                 </p>
-                <p class="fst-italic text-muted">
-                    (dein Benutzername wird automatisch dieser Nachricht zugeordnet)
+                <p class="italic text-muted-500">
+                    {{ __('contact_username_hint') }}
                 </p>
                 <div>
                     <div x-init="document.getElementById('content').focus();">
