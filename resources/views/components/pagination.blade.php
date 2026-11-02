@@ -22,9 +22,9 @@
                 @if ($this->showContinueMark && $this->loopEnd < $this->maxPages)
                     <x-theme-ui::pagination.item icon="ellipsis"/>
                 @endif
-                <x-theme-ui::pagination.item :disabled="($this->currentPage >= $this->loopEnd)" icon="chevron-right" :link="$this->nextPage"/>
+                <x-theme-ui::pagination.item :disabled="($this->currentPage >= $this->maxPages)" icon="chevron-right" :link="$this->nextPage"/>
                 @if ($this->showStartEndNavigation)
-                    <x-theme-ui::pagination.item :disabled="($this->currentPage >= $this->loopEnd)" icon="chevrons-right" :link="$this->maxPages" class="rounded-r-full"/>
+                    <x-theme-ui::pagination.item :disabled="($this->currentPage >= $this->maxPages)" icon="chevrons-right" :link="$this->maxPages" class="rounded-r-full"/>
                 @endif
                 @if ($this->showInfo)
                     <li class="page-item disabled show-md text-nowrap my-auto ml-1 text-sm">
