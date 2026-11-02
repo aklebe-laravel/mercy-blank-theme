@@ -5,7 +5,7 @@
     $_currentLocale = App::currentLocale();
     // English is always included as fallback for keys missing in the current locale
     $_trans = json_encode($_currentLocale === 'en'
-        ? app('system_base')->getTranslations()
+        ? app('system_base')->getTranslations(['en'])
         : app('system_base')->getTranslations(['en', $_currentLocale]));
 @endphp<!DOCTYPE html>
 <html lang="{{ str_replace('_', '-', $_currentLocale) }}" x-data="tallstackui_darkTheme()" x-bind:class="{ 'dark': darkTheme }">
