@@ -27,6 +27,7 @@
         <meta name="csrf-token" content="{{ csrf_token() }}">
         <title>@yield('title') - {{ config('app.name', 'Laravel') }}</title>
         <link rel="icon" href="{{ theme_asset('images/no_image_available.webp') }}">
+        @include('website-base::pwa.head')
         <style>
             [x-cloak] {
                 display: none !important;
